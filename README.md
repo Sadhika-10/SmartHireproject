@@ -182,49 +182,6 @@ Smart_hire_AI_ML_June/
 │
 └── tests/
     └── test_features.py              # Unit tests
-```
-
----
-
-## 💡 Usage
-
-### Via Streamlit Web App (Recommended)
-
-1. Run: `streamlit run app/streamlit_app.py`
-2. Upload a resume (PDF/DOCX/TXT)
-3. View:
-   - Career category prediction + confidence
-   - Top job recommendations
-   - Fit scores for each job
-   - Matched & missing skills
-
-### Programmatic Usage
-
-```python
-from src.models.classifier import ResumeClassifier
-from src.models.recommender import JobRecommender
-from src.models.fit_predictor import FitPredictor
-
-# Load models
-classifier = ResumeClassifier()
-recommender = JobRecommender()
-fit_predictor = FitPredictor()
-
-# Classify resume
-resume_text = "Python developer with 5 years of experience in backend systems..."
-category, confidence = classifier.predict(resume_text)
-print(f"Category: {category}, Confidence: {confidence:.1%}")
-
-# Get recommendations
-jobs = recommender.recommend(resume_text, top_n=5)
-for job in jobs:
-    print(f"  • {job['title']} @ {job['company']} ({job['location']})")
-
-# Get skill gap report
-report = recommender.skill_gap_report(resume_text)
-print(f"Matched skills: {report['matched_skills']}")
-print(f"Missing skills: {report['missing_skills']}")
-```
 
 ---
 
@@ -277,15 +234,6 @@ Raw Data → Preprocess → Feature Engineering → Model Training → App Porta
 
 ---
 
-## 📄 License
-
-Open source — use freely for learning and research.
-
-## 👥 Contributors
-
-SmartHire AI/ML Project Team
-
----
 
 
 
