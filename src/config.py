@@ -27,9 +27,27 @@ JOB_CORPUS_CSV = INTERIM_DIR / "job_corpus.csv"          # merged jobs (readable
 RESUMES_CLEAN_CSV = PROCESSED_DIR / "resumes_clean.csv"  # cleaned resumes
 JOBS_CLEAN_CSV = PROCESSED_DIR / "jobs_clean.csv"        # model-ready jobs (+ text col)
 
+# ---- Model files ----
+CLASSIFIER_PATH = MODELS_DIR / "classifier.pkl"
+TFIDF_VECTORIZER_PATH = MODELS_DIR / "tfidf_vectorizer.pkl"
+RECOMMENDER_PATH = MODELS_DIR / "recommender.pkl"
+JOB_TFIDF_VECTORIZER_PATH = MODELS_DIR / "job_tfidf_vectorizer.pkl"
+JOB_VECTORS_PATH = MODELS_DIR / "job_vectors.pkl"
+FIT_PREDICTOR_PATH = MODELS_DIR / "fit_predictor.pkl"
+JOB_CORPUS_PATH = JOB_CORPUS_CSV
+
 # ---- Common schema every job source is mapped to before merging ----
 COMMON_JOB_COLUMNS = ["title", "company", "location", "skills", "description", "experience"]
 
 # ---- Constants ----
 RANDOM_STATE = 42   # seed for reproducible train/test splits
 TOP_N = 5           # jobs returned by the recommender
+
+# Generic words to exclude from skill extraction
+GENERIC_WORDS = {
+    'and', 'or', 'the', 'a', 'an', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by',
+    'can', 'will', 'would', 'could', 'should', 'must', 'may', 'might',
+    'experience', 'work', 'working', 'job', 'role', 'position', 'company',
+    'team', 'project', 'development', 'software', 'application', 'system',
+    'management', 'manager', 'lead', 'senior', 'junior', 'years', 'strong'
+}

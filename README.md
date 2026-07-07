@@ -1,158 +1,291 @@
-# SmartHire — Resume-to-Job Matching & Career Guidance Engine
+# 🎯 SmartHire AI/ML — Resume-to-Job Matching Platform
 
-Classical-ML project (no LLMs). Upload a resume → get matching jobs, a predicted
-role category, and a skill-gap report.
+An intelligent job recommendation system that matches resumes to job postings using machine learning. Upload a resume → get matching jobs, a predicted career category, a fit score, and a skill-gap report.
 
-## Core scope
-1. Resume category classifier — supervised (TF-IDF → Logistic Regression)
-2. Job recommender — unsupervised (TF-IDF + cosine similarity, top-N)
-3. Skill-gap report — job skills minus resume skills
+## ✨ Features
 
-Optional: fit predictor, clustering + topics, salary regression.
+- **Resume Classification**: Automatically classify resumes into career categories
+- **Job Recommendations**: Personalized job matches based on resume content using TF-IDF + cosine similarity
+- **Fit Score Prediction**: Predict resume-to-job match probability
+- **Skill Gap Analysis**: Identify matched and missing skills
+- **Multi-Format Support**: Parse PDF, DOCX, and TXT resumes
+- **Web Interface**: Easy-to-use Streamlit portal for instant results
+- **Multi-Source Data**: Supports LinkedIn and Naukri job postings
 
-## Requirements
+## 🏗️ Core Components
+
+1. **Resume Classifier** — Supervised ML (TF-IDF + Naive Bayes)
+2. **Job Recommender** — Unsupervised (TF-IDF + cosine similarity)
+3. **Fit Predictor** — Supervised classification model
+4. **Skill-Gap Engine** — Job skills minus resume skills analysis
+
+Optional: Topic clustering, salary prediction, trending skills analysis.
+
+## 📋 Requirements
+
 - **Python 3.10+** (developed on 3.12)
-- **git** (to clone)
-- A free **Kaggle account** (to download the datasets)
+- **pip** or **conda** for package management
+- Virtual environment (recommended)
+- Optional: **Kaggle account** (to download real datasets)
 
-## Getting started
+## 🚀 Quick Start (3 Steps)
 
-### 1. Clone the repo
-```
-git clone <REPO_URL> SmartHire
-cd SmartHire
-```
-> Replace `<REPO_URL>` with the repository's clone URL (e.g.
-> `https://github.com/<user>/SmartHire.git`). If you already have the folder
-> locally, just `cd` into it.
+### Step 1: Setup Environment
+```bash
+cd "Smart_hire_AI_ML_June"
 
-### 2. Create a virtual environment and install dependencies
-```
-python -m venv .venv
+# Create virtual environment
+python -m venv venv
 
-# Windows (PowerShell)
-.venv\Scripts\Activate.ps1
-# Windows (cmd)
-.venv\Scripts\activate.bat
-# macOS / Linux
-source .venv/bin/activate
+# Activate it
+# Windows:
+venv\Scripts\activate
+# macOS / Linux:
+source venv/bin/activate
 
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-### 3. Download the datasets
-The datasets are **not** committed (see `.gitignore`) — download them into
-`data/raw/` once:
+### Step 2: Generate Dummy Models (for testing)
+```bash
+python create_dummy_models.py
 ```
-python download_data.py
-```
-The first run asks for your Kaggle credentials (username + API key from
-Kaggle → Settings → **API** → **Create New Token**). This fetches the Resume
-and Naukri datasets; LinkedIn is optional.
 
-Filenames are already wired up in `src/config.py`, so you only edit that file if
-your downloaded filenames differ. **Full download details + manual alternatives:**
-see [`data/DATASETS.md`](data/DATASETS.md).
+This creates placeholder models so you can test the app immediately without waiting for data downloads and training.
 
-### 4. Build the cleaned data / job corpus
-Merge and clean the raw files into model-ready CSVs (`data/processed/`):
-```
-python -m src.data.preprocess
-```
-This writes `data/interim/job_corpus.csv`, `data/processed/jobs_clean.csv`, and
-`data/processed/resumes_clean.csv`. Run all commands from the project root so the
-`src` package imports resolve.
-
-### 5. Explore & train (notebooks in VS Code)
-The notebooks run in **VS Code** (install the **Python** and **Jupyter**
-extensions if prompted) — no standalone Jupyter server needed:
-
-1. Open the `SmartHire` folder in VS Code.
-2. Open a notebook, e.g. `notebooks/01_eda.ipynb`.
-3. Top-right, click **Select Kernel → Python Environments** and choose the venv
-   at `.venv\Scripts\python.exe` (shown as `.venv (Python 3.12)`).
-4. Run cells with **Shift+Enter**.
-
-Run the notebooks in order **01 → 05**. Each notebook is one module of the
-project; move reusable code from a notebook into the matching `src/` file, and
-save trained models to `models/` (as `.pkl` via joblib) so the app can load them
-without retraining.
-
-> Prefer the classic browser UI instead? Add `jupyter` to `requirements.txt`
-> (or `pip install jupyter`) and run `jupyter notebook`. The pinned dependency
-> is `ipykernel`, which is all VS Code needs.
-
-### 6. Launch the web app
-```
+### Step 3: Launch the App
+```bash
 streamlit run app/streamlit_app.py
 ```
-Opens the SmartHire portal in your browser (default <http://localhost:8501>).
 
-> **Current status:** the data pipeline (steps 3–4) is fully working. The model
-> code in `src/models/` (`classifier.py`, `recommender.py`) and the Streamlit UI
-> in `app/streamlit_app.py` are still stubs — build them via the notebooks first
-> (step 5). Until then the app page will be empty.
+Open browser → `http://localhost:8501` → Upload a resume → Get results! 🎉
 
-## Project structure
+---
+
+## 📊 Full Setup (with Real Data & Models)
+
+### Step 1: Download Datasets
+
+Get your **Kaggle API key**:
+1. Go to kaggle.com → Account Settings → API → Create New Token
+2. Place `kaggle.json` in `~/.kaggle/` (Windows: `C:\Users\<username>\.kaggle\`)
+
+Then run:
+```bash
+python download_data.py
 ```
-smarthire/
-├── README.md                         # what the project is, setup, how to run
-├── requirements.txt                  # Python dependencies to install
-├── .gitignore                        # keeps datasets, models, caches out of git
+
+Downloads:
+- Resume dataset (Kaggle: `datatorque/resume-cv-data`)
+- Naukri jobs (Kaggle: `PromptCloud/naukri-com-job-postings`)
+- LinkedIn jobs (optional: `arshkon/linkedin-job-postings`)
+
+See [`data/DATASETS.md`](data/DATASETS.md) for manual download alternatives.
+
+### Step 2: Preprocess Data
+```bash
+python -m src.data.preprocess
+```
+
+Creates model-ready datasets:
+- `data/interim/job_corpus.csv` — merged jobs
+- `data/processed/resumes_clean.csv` — cleaned resumes
+- `data/processed/jobs_clean.csv` — model-ready jobs
+
+### Step 3: Train Models (Jupyter Notebooks)
+
+Open notebooks in **VS Code** (install **Python** & **Jupyter** extensions):
+
+1. **`notebooks/01_eda.ipynb`** — Exploratory data analysis
+2. **`notebooks/02_resume_classifier.ipynb`** — Train resume classifier
+3. **`notebooks/03_recommender.ipynb`** — Train job recommender
+4. **`notebooks/04_clustering_topics.ipynb`** — Topic modeling & clustering
+5. **`notebooks/05_fit_predictor.ipynb`** — Train fit prediction model
+
+Run each notebook, save trained models to `models/` directory as `.pkl` files.
+
+### Step 4: Run the App with Real Models
+```bash
+streamlit run app/streamlit_app.py
+```
+
+The app now uses your trained models instead of dummy ones!
+
+---
+
+## 🗂️ Project Structure
+
+```
+Smart_hire_AI_ML_June/
+├── README.md                         # This file
+├── requirements.txt                  # Dependencies
+├── create_dummy_models.py            # Generate test models
+├── download_data.py                  # Download datasets from Kaggle
 │
-├── data/                             # all data lives here (git-ignored)
-│   ├── raw/                          # original Kaggle downloads — NEVER edit these
-│   ├── interim/                      # merged / partially cleaned data
-│   └── processed/                    # final, model-ready data
+├── data/                             # Datasets (git-ignored)
+│   ├── DATASETS.md                   # Dataset documentation
+│   ├── raw/                          # Original downloads
+│   │   ├── linkedin/                 # LinkedIn job postings
+│   │   ├── naukri/                   # Naukri job postings
+│   │   └── resumes/                  # Resume files
+│   ├── interim/                      # Merged/partially cleaned
+│   └── processed/                    # Final model-ready data
 │
-├── notebooks/                        # exploration & experiments — run in order
-│   ├── 01_eda.ipynb                  # explore resumes + jobs (shape, categories, nulls)
-│   ├── 02_resume_classifier.ipynb    # SUPERVISED: predict resume category
-│   ├── 03_recommender.ipynb          # UNSUPERVISED: cosine-similarity job ranking
-│   ├── 04_clustering_topics.ipynb    # UNSUPERVISED: clusters + skill-gap report
-│   └── 05_fit_predictor.ipynb        # SUPERVISED (optional): shortlisting model
+├── notebooks/                        # Jupyter notebooks (run in order)
+│   ├── 01_eda.ipynb                  # Exploratory Data Analysis
+│   ├── 02_resume_classifier.ipynb    # Resume classification model
+│   ├── 03_recommender.ipynb          # Job recommendation system
+│   ├── 04_clustering_topics.ipynb    # Topic modeling & clustering
+│   └── 05_fit_predictor.ipynb        # Fit prediction model
 │
-├── src/                              # reusable code — imported by notebooks + app
-│   ├── config.py                     # paths, dataset filenames, constants
+├── src/                              # Reusable Python modules
+│   ├── __init__.py
+│   ├── config.py                     # Paths & constants
+│   ├── evaluate.py                   # Evaluation metrics
+│   │
 │   ├── data/
-│   │   ├── load_data.py              # read the raw CSVs
-│   │   └── preprocess.py             # clean text, merge the job corpus
+│   │   ├── __init__.py
+│   │   ├── load_data.py              # Load raw datasets
+│   │   └── preprocess.py             # Clean & preprocess data
+│   │
 │   ├── features/
-│   │   ├── text_features.py          # TF-IDF vectorizers
-│   │   └── match_features.py         # skill overlap, experience/education match
+│   │   ├── __init__.py
+│   │   ├── text_features.py          # Text vectorization
+│   │   └── match_features.py         # Job-resume matching features
+│   │
 │   ├── models/
-│   │   ├── classifier.py             # train/predict resume category
-│   │   ├── recommender.py            # cosine-similarity job ranking (top-N)
-│   │   ├── clustering.py             # KMeans + optional topic modeling
-│   │   └── fit_predictor.py          # shortlisting model (optional)
-│   ├── parsing/
-│   │   └── resume_parser.py          # extract text from PDF / DOCX / TXT
-│   └── evaluate.py                   # shared metrics for all models
+│   │   ├── __init__.py
+│   │   ├── classifier.py             # Resume classifier
+│   │   ├── recommender.py            # Job recommender
+│   │   ├── fit_predictor.py          # Fit score predictor
+│   │   ├── clustering.py             # Topic clustering
+│   │   └── dummy_models.py           # Test models
+│   │
+│   └── parsing/
+│       ├── __init__.py
+│       └── resume_parser.py          # PDF/DOCX/TXT parsing
 │
-├── models/                           # saved .pkl model files (git-ignored)
+├── models/                           # Trained .pkl models (git-ignored)
+│   ├── classifier.pkl
+│   ├── tfidf_vectorizer.pkl
+│   ├── job_tfidf_vectorizer.pkl
+│   ├── job_vectors.pkl
+│   ├── fit_predictor.pkl
+│   └── recommender.pkl
 │
 ├── app/
-│   └── streamlit_app.py              # the web portal UI (build this last)
+│   └── streamlit_app.py              # Web UI portal
 │
 ├── reports/
-│   └── figures/                      # confusion matrix, PCA/t-SNE, silhouette plots
+│   └── figures/                      # Visualizations & plots
 │
 └── tests/
-    └── test_features.py              # basic unit tests (optional)
+    └── test_features.py              # Unit tests
 ```
 
-### What each part is for
-- **`data/`** — Keep raw downloads in `raw/` untouched; write cleaned versions to
-  `interim/` then `processed/`. The whole folder is git-ignored so datasets never
-  get committed.
-- **`notebooks/`** — Where you experiment and see results. Run 01 → 05 in order;
-  each notebook is one module of the project.
-- **`src/`** — Once code works in a notebook, move the reusable function here so the
-  notebooks and the app can both import it. `config.py` holds every path so nothing
-  is hard-coded.
-- **`models/`** — Trained models saved as `.pkl` (via joblib) so the app can load
-  them without retraining.
-- **`app/`** — The Streamlit portal. It only wires together pieces that already work
-  in `src/`, so build it last.
-- **`reports/`** — Figures for the write-up and the final report.
-- **`tests/`** — Optional sanity checks for feature functions.
+---
+
+## 💡 Usage
+
+### Via Streamlit Web App (Recommended)
+
+1. Run: `streamlit run app/streamlit_app.py`
+2. Upload a resume (PDF/DOCX/TXT)
+3. View:
+   - Career category prediction + confidence
+   - Top job recommendations
+   - Fit scores for each job
+   - Matched & missing skills
+
+### Programmatic Usage
+
+```python
+from src.models.classifier import ResumeClassifier
+from src.models.recommender import JobRecommender
+from src.models.fit_predictor import FitPredictor
+
+# Load models
+classifier = ResumeClassifier()
+recommender = JobRecommender()
+fit_predictor = FitPredictor()
+
+# Classify resume
+resume_text = "Python developer with 5 years of experience in backend systems..."
+category, confidence = classifier.predict(resume_text)
+print(f"Category: {category}, Confidence: {confidence:.1%}")
+
+# Get recommendations
+jobs = recommender.recommend(resume_text, top_n=5)
+for job in jobs:
+    print(f"  • {job['title']} @ {job['company']} ({job['location']})")
+
+# Get skill gap report
+report = recommender.skill_gap_report(resume_text)
+print(f"Matched skills: {report['matched_skills']}")
+print(f"Missing skills: {report['missing_skills']}")
+```
+
+---
+
+## 📈 Model Architecture
+
+| Model | Type | Algorithm | Input | Output |
+|-------|------|-----------|-------|--------|
+| **Classifier** | Supervised | TF-IDF + Naive Bayes | Resume text | Career category + confidence |
+| **Recommender** | Unsupervised | TF-IDF + Cosine Similarity | Resume text | Top-N jobs ranked |
+| **Fit Predictor** | Supervised | Engineered features + LogReg | Resume + Job | Fit probability (0–1) |
+| **Clustering** | Unsupervised | KMeans / LDA | Job descriptions | Topic assignments |
+
+---
+
+
+
+
+
+
+---
+
+## 📚 Technology Stack
+
+- **Data Processing**: pandas, scikit-learn
+- **NLP**: TF-IDF, cosine similarity
+- **ML Models**: Naive Bayes, Logistic Regression, KMeans
+- **Web Framework**: Streamlit
+- **Text Parsing**: pdfplumber, python-docx
+- **Utilities**: numpy, pathlib
+
+---
+
+## 📝 Workflow
+
+```
+Raw Data → Preprocess → Feature Engineering → Model Training → App Portal
+           (Step 2)     (Notebooks)          (Notebooks)       (Streamlit)
+```
+
+---
+
+## 🎯 Next Steps
+
+1. **Immediate**: Run `python create_dummy_models.py` → Test app
+2. **Download Data**: Get real datasets via `python download_data.py`
+3. **Preprocess**: Clean data with `python -m src.data.preprocess`
+4. **Train Models**: Run notebooks 01→05 to train real models
+5. **Evaluate**: Check model performance & iterate
+6. **Deploy**: Push to cloud (Streamlit Cloud, Heroku, AWS, etc.)
+
+---
+
+## 📄 License
+
+Open source — use freely for learning and research.
+
+## 👥 Contributors
+
+SmartHire AI/ML Project Team
+
+---
+
+
+
